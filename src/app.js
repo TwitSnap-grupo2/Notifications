@@ -8,8 +8,10 @@ import { errorMiddleware, unknownEndpoint } from "./utils/middleware.js";
 import logger from "./utils/logger.js";
 import mongoose from "mongoose";
 import config from "./utils/config.js";
-
+import { firebase } from "./utils/firebase.js";
 dotenv.config();
+
+console.log(firebase.name);
 
 const app = express();
 // logger

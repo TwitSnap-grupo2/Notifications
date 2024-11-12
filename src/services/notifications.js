@@ -1,6 +1,7 @@
 import notificationsDb from "../db/repositories/notifications.js";
 import usersDb from "../db/repositories/users.js";
 import logger from "../utils/logger.js";
+import admin from "firebase-admin";
 
 const createNotification = async (userId, notification) => {
   let user = await usersDb.getUserById(userId);
@@ -16,6 +17,17 @@ const createNotification = async (userId, notification) => {
   user.notifications.push(newNotification._id);
   await user.save();
 
+  await admin.messaging().sendEachForMulticast({
+    tokens: user.devices,
+    data: {
+      url: notification.url,
+    },
+    notification: {
+      title: notification.title,
+      body: notification.body,
+    },
+  });
+
   logger.debug("newNotification: ", newNotification);
   return newNotification;
 };
@@ -28,11 +40,8 @@ const addUserDevice = async (userId, newDeviceToken) => {
   }
 
   if (!user.devices.includes(newDeviceToken)) {
-    console.log("🚀 ~ addUserDevice ~ newDeviceToken:", newDeviceToken);
     user = usersDb.addUserDevice(user, newDeviceToken);
-    // user.devices.push(newDeviceToken);
 
-    // await user.save();
     logger.info(`Device token ${newDeviceToken} added for user ${userId}`);
   } else {
     logger.info(

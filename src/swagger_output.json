@@ -221,10 +221,6 @@
                             "type": "string",
                             "description": "The unique identifier of the notification."
                           },
-                          "userId": {
-                            "type": "string",
-                            "description": "The user ID associated with the notification."
-                          },
                           "title": {
                             "type": "string",
                             "description": "The title of the notification."
