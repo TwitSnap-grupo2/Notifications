@@ -1,0 +1,407 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v1.0.0",
+    "title": "Twitsnaps Service",
+    "description": "Twitsnaps API"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/notifications/{id}/devices": {
+      "post": {
+        "summary": "Add a device token to a user's devices",
+        "operationId": "addUserDevice",
+        "tags": ["Notifications"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewDevice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Device token successfully added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve devices for a user",
+        "operationId": "getUserDevices",
+        "tags": ["Notifications"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User's devices retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevicesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{id}": {
+      "post": {
+        "summary": "Create a new notification for a user",
+        "operationId": "createNotification",
+        "tags": ["Notifications"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewNotification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notification successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notification"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve notifications for a given user",
+        "description": "This endpoint retrieves all notifications associated with the user identified by the provided `id`.",
+        "operationId": "getUserNotifications",
+        "tags": ["Notifications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "The unique identifier of the user whose notifications are to be retrieved."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of notifications for the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "description": "The unique identifier of the notification."
+                          },
+                          "userId": {
+                            "type": "string",
+                            "description": "The user ID associated with the notification."
+                          },
+                          "title": {
+                            "type": "string",
+                            "description": "The title of the notification."
+                          },
+                          "body": {
+                            "type": "string",
+                            "description": "The content of the notification."
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "A URL associated with the notification."
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the notification was created."
+                          }
+                        },
+                        "required": [
+                          "_id",
+                          "userId",
+                          "title",
+                          "body",
+                          "url",
+                          "createdAt"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "NewDevice": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Device token"
+          }
+        },
+        "required": ["device"]
+      },
+      "NewNotification": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL associated with the notification"
+          },
+          "body": {
+            "type": "string",
+            "description": "Body content of the notification"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the notification"
+          }
+        },
+        "required": ["userId", "url", "body", "title"]
+      },
+      "DevicesResponse": {
+        "type": "object",
+        "properties": {
+          "devices": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Device token"
+            },
+            "description": "List of device tokens"
+          }
+        }
+      },
+      "DeviceResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Response message"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "userToken": {
+            "type": "string",
+            "description": "User token associated with the notification"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL associated with the notification"
+          },
+          "body": {
+            "type": "string",
+            "description": "Body content of the notification"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the notification"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the notification was created"
+          },
+          "id": {
+            "type": "string",
+            "description": "Notification ID"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID"
+          },
+          "devices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of device tokens"
+          },
+          "notifications": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Notification IDs"
+            },
+            "description": "List of notification IDs"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "name": {
+            "type": "string",
+            "description": "Error name"
+          }
+        }
+      }
+    }
+  }
+}
