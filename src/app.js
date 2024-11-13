@@ -2,13 +2,15 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
-import swaggerOutput from "./swagger_output.json" assert { type: "json" };
 import { routes } from "./controllers/index.js";
 import { errorMiddleware, unknownEndpoint } from "./utils/middleware.js";
 import logger from "./utils/logger.js";
 import mongoose from "mongoose";
 import config from "./utils/config.js";
 import { firebase } from "./utils/firebase.js";
+
+const swaggerOutput = require("./swagger_output.json");
+
 dotenv.config();
 
 console.log(firebase.name);
