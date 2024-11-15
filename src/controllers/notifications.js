@@ -14,6 +14,10 @@ const newDeviceSchema = z.object({
   device: z.string(),
 });
 
+const modifiedNotificationSchema = z.object({
+  seen: z.boolean(),
+});
+
 router.post("/:id/devices", async (req, res, next) => {
   try {
     const { device } = newDeviceSchema.parse(req.body);
@@ -90,5 +94,27 @@ router.get("/:id", async (req, res, next) => {
     next({ message: err.message, name: "DatabaseError" });
   }
 });
+
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const notificationId = req.params.id;
+    const newStatus = modifiedNotificationSchema.parse(req.body);
+
+    const modifiedNotification = await notificationsService.modifyNotification(
+      notificationId,
+      newStatus
+    );
+
+    if (!modifiedNotification) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    return res.status(200).json(modifiedNotification);
+  } catch (err) {
+    logger.error(err);
+    next({ message: err.message, name: "DatabaseError" });
+  }
+});
+
 
 export default router;

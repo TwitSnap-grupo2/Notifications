@@ -239,14 +239,7 @@
                             "description": "Timestamp when the notification was created."
                           }
                         },
-                        "required": [
-                          "_id",
-                          "userId",
-                          "title",
-                          "body",
-                          "url",
-                          "createdAt"
-                        ]
+                        "required": ["_id", "title", "body", "url", "createdAt"]
                       }
                     }
                   }
@@ -261,6 +254,79 @@
             "description": "Internal server error"
           }
         }
+      },
+      "patch": {
+        "summary": "Update an existing notification",
+        "operationId": "updateNotification",
+        "tags": ["Notifications"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Notification ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notification"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Notification not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -272,6 +338,16 @@
       }
     },
     "schemas": {
+      "UpdateNotification": {
+        "type": "object",
+        "properties": {
+          "seen": {
+            "type": "boolean",
+            "description": "Updated seen status of the notification"
+          }
+        },
+        "additionalProperties": false
+      },
       "NewDevice": {
         "type": "object",
         "properties": {
@@ -285,11 +361,6 @@
       "NewNotification": {
         "type": "object",
         "properties": {
-          "userId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "User ID"
-          },
           "url": {
             "type": "string",
             "description": "URL associated with the notification"
@@ -303,7 +374,7 @@
             "description": "Title of the notification"
           }
         },
-        "required": ["userId", "url", "body", "title"]
+        "required": ["url", "body", "title"]
       },
       "DevicesResponse": {
         "type": "object",

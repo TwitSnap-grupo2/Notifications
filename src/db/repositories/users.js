@@ -11,7 +11,10 @@ const createUser = async (id) => {
 };
 
 const getUserWithNotifications = async (id) => {
-  return await User.findOne({ id: id }).populate("notifications");
+  return await User.findOne({ id: id }).populate({
+    path: "notifications",
+    options: { sort: { createdAt: -1 } }, // Sort by createdAt in descending order
+  });
 };
 
 const addUserDevice = async (user, deviceToken) => {
@@ -19,10 +22,6 @@ const addUserDevice = async (user, deviceToken) => {
   await user.save();
   return user;
 };
-
-// const addUserDevie = async (id, deviceToken) => {
-
-// }
 
 export default {
   getUserById,

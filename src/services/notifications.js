@@ -8,10 +8,10 @@ const createNotification = async (userId, notification) => {
   if (!user) {
     user = await usersDb.createUser(userId);
   }
-  console.log("🚀 ~ createNotification ~ user:", user);
   const newNotification = await notificationsDb.createNewNotification({
     ...notification,
     userId: user._id,
+    seen: false,
   });
 
   user.notifications.push(newNotification._id);
@@ -71,9 +71,17 @@ const getUserWithNotifications = async (id) => {
   return user.notifications;
 };
 
+const modifyNotification = async (notificationId, modifiedParts) => {
+  return await notificationsDb.modifyNotification(
+    notificationId,
+    modifiedParts
+  );
+};
+
 export default {
   createNotification,
   addUserDevice,
   getUserById,
   getUserWithNotifications,
+  modifyNotification,
 };
