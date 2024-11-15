@@ -116,5 +116,18 @@ router.patch("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/:id/unseen", async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+
+    const unseenNotificationsCount =
+      await notificationsService.getUnseenNotificationCount(userId);
+
+    return res.status(200).json({ unseen: unseenNotificationsCount });
+  } catch (err) {
+    logger.error(err);
+    next({ message: err.message, name: "DatabaseError" });
+  }
+});
 
 export default router;

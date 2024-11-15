@@ -23,9 +23,23 @@ const addUserDevice = async (user, deviceToken) => {
   return user;
 };
 
+const getUnseenNotificationCount = async (userId) => {
+  const user = await User.findOne({ id: userId }).populate({
+    path: "notifications",
+    match: { seen: false }, // Only include notifications with seen: false
+  });
+
+  if (!user) {
+    throw new Error(`User with ID ${userId} not found`);
+  }
+
+  return user.notifications.length;
+};
+
 export default {
   getUserById,
   createUser,
   getUserWithNotifications,
   addUserDevice,
+  getUnseenNotificationCount,
 };

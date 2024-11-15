@@ -122,6 +122,59 @@
         }
       }
     },
+    "/notifications/{id}/unseen": {
+      "get": {
+        "summary": "Retrieve the number of unseen notifications for a given user",
+        "operationId": "getUserUnseenNotificationsCount",
+        "tags": ["Notifications"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of unseen notifications for the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unseen": {
+                      "type": "integer",
+                      "description": "The number of unseen notifications"
+                    }
+                  },
+                  "required": ["unseen"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications/{id}": {
       "post": {
         "summary": "Create a new notification for a user",

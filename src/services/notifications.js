@@ -1,4 +1,5 @@
 import notificationsDb from "../db/repositories/notifications.js";
+import users from "../db/repositories/users.js";
 import usersDb from "../db/repositories/users.js";
 import logger from "../utils/logger.js";
 import admin from "firebase-admin";
@@ -78,10 +79,15 @@ const modifyNotification = async (notificationId, modifiedParts) => {
   );
 };
 
+const getUnseenNotificationCount = async (userId) => {
+  return await usersDb.getUnseenNotificationCount(userId);
+};
+
 export default {
   createNotification,
   addUserDevice,
   getUserById,
   getUserWithNotifications,
   modifyNotification,
+  getUnseenNotificationCount,
 };
