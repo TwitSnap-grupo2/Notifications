@@ -23,6 +23,7 @@ const createNotification = async (userId, notification) => {
     tokens: user.devices,
     data: {
       url: notification.url,
+      createdBy: userId,
     },
     notification: {
       title: notification.title,
