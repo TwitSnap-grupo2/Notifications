@@ -12,6 +12,7 @@ const createNotification = async (userId, notification) => {
   const newNotification = await notificationsDb.createNewNotification({
     ...notification,
     userId: user._id,
+    createdBy: userId,
     seen: false,
   });
 

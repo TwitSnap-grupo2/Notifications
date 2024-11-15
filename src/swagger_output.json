@@ -478,6 +478,11 @@
             "format": "date-time",
             "description": "Time when the notification was created"
           },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Creator user id"
+          },
           "id": {
             "type": "string",
             "description": "Notification ID"

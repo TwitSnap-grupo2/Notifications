@@ -5,6 +5,7 @@ const notificationSchema = new mongoose.Schema({
   body: { type: String, required: true },
   title: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  createdBy: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   seen: { type: Boolean, required: true },
 });
