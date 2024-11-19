@@ -381,6 +381,17 @@
           }
         }
       }
+    },
+    "/notifications/ping": {
+      "post": {
+        "summary": "Echoes pong",
+        "operationId": "Ping",
+        "tags": ["Healthcheck"],
+
+        "responses": {
+          "200": {}
+        }
+      }
     }
   },
   "components": {

@@ -18,6 +18,10 @@ const modifiedNotificationSchema = z.object({
   seen: z.boolean(),
 });
 
+router.post("/ping", async (req, res) => {
+  res.status(200).json({ message: "pong" });
+});
+
 router.post("/:id/devices", async (req, res, next) => {
   try {
     const { device } = newDeviceSchema.parse(req.body);
@@ -128,10 +132,6 @@ router.get("/:id/unseen", async (req, res, next) => {
     logger.error(err);
     next({ message: err.message, name: "DatabaseError" });
   }
-});
-
-router.post("/ping", async (req, res) => {
-  res.status(200).json({ message: "pong" });
 });
 
 export default router;
