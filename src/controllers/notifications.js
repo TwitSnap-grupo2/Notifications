@@ -18,8 +18,8 @@ const modifiedNotificationSchema = z.object({
   seen: z.boolean(),
 });
 
-router.post("/ping", async (req, res) => {
-  res.status(200).json({ message: "pong" });
+const newApiKeySchema = z.object({
+  apiKey: z.string(),
 });
 
 router.post("/:id/devices", async (req, res, next) => {
@@ -131,6 +131,17 @@ router.get("/:id/unseen", async (req, res, next) => {
   } catch (err) {
     logger.error(err);
     next({ message: err.message, name: "DatabaseError" });
+  }
+});
+
+router.put("/apiKey", async (req, res, next) => {
+  try {
+    const data = newApiKeySchema.parse(req.body);
+    process.env["API_KEY"] = data.apiKey;
+    console.log("New apiKey: ", process.env["API_KEY"]);
+    res.status(200).json({ apiKey: data.apiKey });
+  } catch (err) {
+    next(err);
   }
 });
 

@@ -13,7 +13,7 @@ const createNotification = async (userId, notification) => {
     ...notification,
     userId: user._id,
     createdBy: userId,
-    seen: false,
+    seen: false
   });
 
   user.notifications.push(newNotification._id);

@@ -2,6 +2,29 @@ import app from "./app.js";
 import config from "./utils/config.js";
 import logger from "./utils/logger.js";
 
-app.listen(config.PORT, () => {
+app.listen(config.PORT, async () => {
+  if (!config.SERVICE_ID || !config.REGISTRY_URL) {
+    logger.error("Missing SERVICE_ID or REGISTRY_URL environment variables");
+    // process.exit(1);
+  }
+
+  try {
+    const response = await fetch(
+      `${config.REGISTRY_URL}/api/registry/${config.SERVICE_ID}`
+    );
+    if (!response.ok) {
+      logger.error("Error trying to get API Key");
+      // process.exit(1);
+    }
+
+    const data = await response.json();
+    logger.info("API_KEY fetched successfully");
+    process.env["API_KEY"] = data.apiKey;
+    console.log("New API_KEY:", process.env["API_KEY"]);
+  } catch (error) {
+    logger.error("API Key fetch error:", error);
+    // process.exit(1);
+  }
+
   logger.info(`Server listening on port ${config.PORT}`);
 });

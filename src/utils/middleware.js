@@ -68,3 +68,31 @@ export const errorMiddleware = (err, req, res, _next) => {
     return;
   }
 };
+
+export const apiKeyValidationMiddleware = async (req, res, next) => {
+  const apiKey = req.headers.authorization; // Ensure API key is sent in the Authorization header
+
+  if (!apiKey) {
+    return res.status(401).send({ detail: "Missing API Key" });
+  }
+
+  try {
+    const response = await fetch(
+      `https://services-registry.onrender.com/api/registry/validate?apiKey=${apiKey}`
+    );
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return res.status(401).send({ detail: "Invalid API Key" });
+      }
+      return res.status(response.status).send({ detail: "Validation error" });
+    }
+
+    next();
+  } catch (error) {
+    logger.error("API Key validation error:", error);
+    return res
+      .status(500)
+      .send({ detail: "Internal server error during API key validation" });
+  }
+};

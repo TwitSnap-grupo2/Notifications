@@ -11,7 +11,12 @@ if (!MONGODB_URI) {
   throw Error("MONGODB_URI is undefined");
 }
 
+const SERVICE_ID = process.env.SERVICE_ID;
+const REGISTRY_URL = process.env.REGISTRY_URL;
+
 export default {
   PORT,
   MONGODB_URI,
+  SERVICE_ID,
+  REGISTRY_URL,
 };
