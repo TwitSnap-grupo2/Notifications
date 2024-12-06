@@ -1,5 +1,4 @@
 import notificationsDb from "../db/repositories/notifications.js";
-import users from "../db/repositories/users.js";
 import usersDb from "../db/repositories/users.js";
 import logger from "../utils/logger.js";
 import admin from "firebase-admin";
@@ -9,11 +8,12 @@ const createNotification = async (userId, notification) => {
   if (!user) {
     user = await usersDb.createUser(userId);
   }
+
   const newNotification = await notificationsDb.createNewNotification({
     ...notification,
     userId: user._id,
     createdBy: userId,
-    seen: false
+    seen: false,
   });
 
   user.notifications.push(newNotification._id);
@@ -31,11 +31,10 @@ const createNotification = async (userId, notification) => {
     },
   });
 
-  logger.debug("newNotification: ", newNotification);
   return newNotification;
 };
 
-const addUserDevice = async (userId, newDeviceToken) => {
+const tryAddUserDevice = async (userId, newDeviceToken) => {
   let user = await usersDb.getUserById(userId);
 
   if (!user) {
@@ -43,7 +42,7 @@ const addUserDevice = async (userId, newDeviceToken) => {
   }
 
   if (!user.devices.includes(newDeviceToken)) {
-    user = usersDb.addUserDevice(user, newDeviceToken);
+    user = await usersDb.addUserDevice(user, newDeviceToken);
 
     logger.info(`Device token ${newDeviceToken} added for user ${userId}`);
   } else {
@@ -75,10 +74,11 @@ const getUserWithNotifications = async (id) => {
 };
 
 const modifyNotification = async (notificationId, modifiedParts) => {
-  return await notificationsDb.modifyNotification(
+  const a = await notificationsDb.modifyNotification(
     notificationId,
     modifiedParts
   );
+  return a;
 };
 
 const getUnseenNotificationCount = async (userId) => {
@@ -87,7 +87,7 @@ const getUnseenNotificationCount = async (userId) => {
 
 export default {
   createNotification,
-  addUserDevice,
+  addUserDevice: tryAddUserDevice,
   getUserById,
   getUserWithNotifications,
   modifyNotification,

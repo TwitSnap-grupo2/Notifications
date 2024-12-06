@@ -28,7 +28,7 @@ export const unknownEndpoint = (request, response) => {
 };
 
 export const errorMiddleware = (err, req, res, _next) => {
-  console.log("🚀 ~ errorMiddleware ~ err:", err);
+  logger.error("errorMiddleware ~ err:", err);
   if (err instanceof z.ZodError) {
     logger.error("Error: ", err.flatten());
 
@@ -58,7 +58,7 @@ export const errorMiddleware = (err, req, res, _next) => {
       );
     return;
   } else if (err instanceof Error) {
-    console.log("🚀 ~ errorMiddleware ~ err :", err);
+    logger.error("errorMiddleware ~ err :", err);
 
     res
       .status(err.statusCode ?? 400)
